@@ -139,7 +139,7 @@ def promote_member(user: _User, source: str) -> _User:
     except _ActiveCampaignError:
         pass
     email_msg = render_to_string(
-        'payments/membership_email.txt',
+        'launch/membership_email.txt',
         {
             'user': user,
             'cohort_detail_url': build_absolute_uri(cohort.get_absolute_url())
@@ -210,40 +210,6 @@ def promote_data_scientist(user: _User, source: str) -> _User:
         [user.email]
     )
     return user
-
-
-def promote_client(user: _User, source: str) -> None:
-    """
-    Promote a user to Client role and change it's role on Email Marketing. Will not fail in case API call fails.
-    Email welcome email is sent to user
-    :param source: source of traffic
-    :param user:
-    :return:
-    """
-    _core_facade.promote_to_client(user, source)
-    sync_user_on_discourse(user)
-    try:
-        _email_marketing_facade.create_or_update_client(user.first_name, user.email, id=user.id)
-    except _ActiveCampaignError:
-        pass
-    email_msg = render_to_string(
-        'payments/pytools_email.txt',
-        {
-            'user': user,
-            'ty_url': build_absolute_uri(reverse('payments:pytools_thanks'))
-        }
-    )
-    _send_mail(
-        'Inscrição no curso Pytools realizada! Confira o link com detalhes.',
-        email_msg,
-        _settings.DEFAULT_FROM_EMAIL,
-        [user.email]
-    )
-
-
-def promote_client_and_remove_boleto_tag(user: _User, source: str = None):
-    promote_client(user, source)
-    _email_marketing_facade.remove_tags(user.email, user.id, CLIENT_BOLETO_TAG)
 
 
 def find_user_by_email(user_email: str) -> _User:

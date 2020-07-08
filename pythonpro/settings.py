@@ -78,7 +78,6 @@ INSTALLED_APPS = [
     'pythonpro.core',
     'pythonpro.discourse',
     'pythonpro.modules',
-    'pythonpro.payments',
     'pythonpro.cohorts',
     'pythonpro.email_marketing',
     'pythonpro.dashboard',
